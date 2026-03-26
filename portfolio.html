@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Om Memariya | Video Editor</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    html {
+      scroll-behavior: smooth;
+    }
+
+    /* Custom Premium Scrollbar */
+    ::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: rgba(2, 6, 23, 0.9);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(to bottom, #6366f1, #22d3ee);
+      border-radius: 5px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(to bottom, #818cf8, #67e8f9);
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      color: #e5e7eb;
+      line-height: 1.6;
+      background-color: #0f172a;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      top: -5%;
+      left: -5%;
+      width: 110%;
+      height: 110%;
+      background: linear-gradient(rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.9)), url('bg.png') center/cover no-repeat;
+      z-index: -1;
+      animation: zoomPan 20s infinite alternate ease-in-out;
+    }
+
+    @keyframes zoomPan {
+      0% {
+        transform: scale(1) translate(0, 0);
+      }
+
+      100% {
+        transform: scale(1.05) translate(1%, 1%);
+      }
+    }
+
+    header {
+      text-align: center;
+      padding: 100px 20px 60px;
+      background: rgba(15, 23, 42, 0.4);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      color: #e2e8f0;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 3rem;
+      background: linear-gradient(135deg, #a5b4fc, #22d3ee);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 30px rgba(34, 211, 238, 0.3);
+    }
+
+    header p {
+      font-size: 1.15rem;
+      margin-top: 15px;
+      color: #cbd5e1;
+    }
+
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(2, 6, 23, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: 20px 0;
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      z-index: 1000;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .navbar a {
+      color: #e2e8f0;
+      text-decoration: none;
+      font-size: 1rem;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .navbar a:hover {
+      color: #22d3ee;
+      text-shadow: 0 0 15px rgba(34, 211, 238, 0.6);
+      transform: translateY(-2px);
+    }
+
+    section {
+      opacity: 0;
+      scroll-margin-top: 80px;
+      max-width: 1000px;
+      margin: auto;
+      padding: 50px 20px;
+    }
+
+    h2 {
+      border-bottom: 2px solid #22d3ee;
+      display: inline-block;
+      padding-bottom: 6px;
+      margin-bottom: 25px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+    }
+
+    .two-col-grid {
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 30px;
+    }
+
+    .styled-list {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    .styled-list li {
+      margin-bottom: 15px;
+      padding-left: 30px;
+      position: relative;
+      font-size: 1.05rem;
+    }
+
+    .styled-list li::before {
+      content: "✔";
+      position: absolute;
+      left: 0;
+      color: #22d3ee;
+      font-size: 1.1rem;
+      text-shadow: 0 0 10px rgba(34, 211, 238, 0.5);
+    }
+
+    .card {
+      opacity: 0;
+      background: rgba(2, 6, 23, 0.7);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      padding: 25px;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease, border-color 0.4s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-10px) scale(1.03) !important;
+      box-shadow: 0 20px 40px rgba(34, 211, 238, 0.25);
+      border-color: rgba(34, 211, 238, 0.4);
+    }
+
+    .card h3 {
+      margin-top: 0;
+      color: #22d3ee;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 10px 22px;
+      background: #22d3ee;
+      color: #020617;
+      text-decoration: none;
+      border-radius: 30px;
+      font-weight: bold;
+      margin-top: 15px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease, color 0.3s ease;
+      box-shadow: 0 0 15px rgba(34, 211, 238, 0.4);
+    }
+
+    .btn:hover {
+      background: #e0e7ff;
+      color: #020617;
+      transform: scale(1.05);
+      box-shadow: 0 0 25px rgba(224, 231, 255, 0.8);
+    }
+
+    .video-container {
+      position: relative;
+      padding-bottom: 56.25%;
+      /* 16:9 aspect ratio */
+      height: 0;
+      overflow: hidden;
+      max-width: 100%;
+      border-radius: 16px;
+      margin-bottom: 40px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .video-container iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    .fade-in-up {
+      animation: fadeInUp 0.8s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+    }
+
+    @keyframes fadeInUp {
+      0% {
+        opacity: 0;
+        transform: translateY(50px);
+      }
+
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .contact {
+      text-align: center;
+    }
+
+    footer {
+      background: #020617;
+      text-align: center;
+      padding: 20px;
+      color: #94a3b8;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <nav class="navbar">
+      <a href="#about">About</a>
+      <a href="#skills">Skills</a>
+      <a href="#portfolio">Portfolio</a>
+      <a href="#services">Services</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <h1>🎬 Om Memariya</h1>
+    <p>Professional Video Editor | Reels • YouTube • Cinematic</p>
+  </header>
+
+  <section id="about">
+    <h2>👤 About Me</h2>
+    <p>
+      Hi, I’m <strong>Om Memariya</strong>, a passionate video editor specializing in
+      creating engaging, high-quality videos that tell stories and connect with audiences.
+      I focus on clean edits, strong pacing, and visuals that match the client’s vision.
+    </p>
+  </section>
+
+  <section id="skills">
+    <h2>🛠 Skills & Tools</h2>
+    <div class="grid">
+      <div class="card" style="text-align: center;">
+        <img src="video_editing.png" alt="Video Editing"
+          style="width: 100%; height: 120px; object-fit: cover; border-radius: 8px; margin-bottom: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.4);">
+        <br>Video Editing (Cuts & Transitions)
+      </div>
+      <div class="card" style="text-align: center;">
+      <img src="motion_graphics.png" alt="Motion Graphics" style="width: 100%; height: 120px; object-fit: cover; border-radius: 8px; margin-bottom: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.4);">
+      <br>Motion Graphics & Text Animation
+    </div>
+      <div class="card" style="text-align: center;">
+      <img src="short_video.png" alt="Reels & Shorts" style="width: 100%; height: 120px; object-fit: cover; border-radius: 8px; margin-bottom: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.4);">
+      <br>Reels / Shorts / YouTube Videos
+    </div>
+      <div class="card" style="text-align: center;">
+        <img src="cinematic.png" alt="Cinematic Editing"
+          style="width: 100%; height: 120px; object-fit: cover; border-radius: 8px; margin-bottom: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.4);">
+        <br>Cinematic Editing
+      </div>
+    </div>
+
+    <br>
+
+    <div class="grid">
+      <div class="card" style="text-align: center;">
+        <img src="color_grading.png" alt="Color Grading"
+          style="width: 100%; height: 120px; object-fit: cover; border-radius: 8px; margin-bottom: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.4);">
+        <br>Color Grading
+      </div>
+      <div class="card" style="text-align: center;">
+        <img src="davinci_resolve.png" alt="DaVinci Resolve"
+          style="width: 100%; height: 120px; object-fit: cover; border-radius: 8px; margin-bottom: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.4);">
+        <br>DaVinci Resolve
+      </div>
+      <div class="card" style="text-align: center;">
+        <img src="capcut.png" alt="CapCut"
+          style="width: 100%; height: 120px; object-fit: cover; border-radius: 8px; margin-bottom: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.4);">
+        <br>CapCut
+      </div>
+    </div>
+  </section>
+
+  <section id="portfolio">
+    <h2>📂 Portfolio / Sample Work</h2>
+
+    <div class="video-container">
+      <iframe src="https://www.youtube.com/embed/aqz-KE-bpKQ?autoplay=0&controls=1&rel=0" title="Cinematic Showreel"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen></iframe>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <h3>YouTube Video Editing</h3>
+        <p>Clean cuts, effects, and background music.</p>
+        <a class="btn" href="#">View Video</a>
+      </div>
+
+      <div class="card">
+        <h3>Instagram Reels / Shorts</h3>
+        <p>Fast-paced, trend-based engaging edits.</p>
+        <a class="btn" href="https://www.instagram.com/reel/DT25NAHjHhM/">View Reel</a>
+      </div>
+
+      <div class="card">
+        <h3>Cinematic Video</h3>
+        <p>Professional color grading & storytelling.</p>
+        <a class="btn" href="https://www.instagram.com/reel/DOv_jYXgcvD/">Watch</a>
+      </div>
+
+      <div class="card">
+        <h3>Promotional Video</h3>
+        <p>Brand-focused marketing edits.</p>
+        <a class="btn" href="https://www.instagram.com/reel/DUFjSKdATas/s">View Ad</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="services">
+    <div class="grid two-col-grid">
+      <div class="card">
+        <h2>💼 Experience</h2>
+        <ul class="styled-list">
+          <li>Freelance Video Editor</li>
+          <li>Worked with content creators & small businesses</li>
+          <li>Edited videos for social media platforms</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h2>💰 Services I Offer</h2>
+        <ul class="styled-list">
+          <li>YouTube Video Editing</li>
+          <li>Instagram Reels & Shorts</li>
+          <li>Promotional / Advertisement Videos</li>
+          <li>Basic Motion Graphics</li>
+          <li>Color Grading & Audio Enhancement</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>⏱ Turnaround Time</h2>
+    <p>Short videos (Reels): <strong>24–48 hours</strong></p>
+    <p>Long videos (YouTube): <strong>2–4 days</strong></p>
+  </section>
+
+  <section id="contact" class="contact">
+    <h2>📞 Contact Details</h2>
+    <p>📧 Email: Ommemariya.2506@gmail.com</p>
+    <p>📱 WhatsApp: +91-7096151191</p>
+    <p>🌐 Portfolio: Google Drive / YouTube</p>
+
+    <a class="btn" href="https://www.instagram.com/ommemariya_1976/">Hire Me</a>
+  </section>
+
+  <footer>
+    © 2026 Om Memariya | Video Editor
+    <br>
+    Thank you for considering my work!
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('fade-in-up');
+          }
+        });
+      }, { threshold: 0.15 });
+
+      const elementsToAnimate = document.querySelectorAll('section, .card');
+      elementsToAnimate.forEach((el) => {
+        observer.observe(el);
+      });
+    });
+  </script>
+</body>
+
+</html>
